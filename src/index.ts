@@ -10,6 +10,7 @@ import {
 	introspectLocalSchema,
 } from "./helpers/introspection.js";
 import { getVersion } from "./helpers/package.js" with { type: "macro" };
+import { fetch } from "undici";
 
 // Check for deprecated command line arguments
 checkDeprecatedArguments();
@@ -39,10 +40,10 @@ const env = EnvSchema.parse(process.env);
 const server = new McpServer({
 	name: env.NAME,
 	version: getVersion(),
-	description: `GraphQL MCP server for ${env.ENDPOINT}`,
+	description: `ZoomInfo GTM (Go-to-Market) GraphQL MCP server for ${env.ENDPOINT}`,
 });
 
-server.resource("graphql-schema", new URL(env.ENDPOINT).href, async (uri) => {
+server.resource("GraphQL-Schema", new URL(env.ENDPOINT).href, async (uri) => {
 	try {
 		let schema: string;
 		if (env.SCHEMA) {
@@ -65,8 +66,8 @@ server.resource("graphql-schema", new URL(env.ENDPOINT).href, async (uri) => {
 });
 
 server.tool(
-	"introspect-schema",
-	"Introspect the GraphQL schema, use this tool before doing a query to get the schema information if you do not have it available as a resource already.",
+	"Introspect-GraphQL-Schema",
+	"Introspect the ZoomInfo GTM GraphQL schema, use this tool before doing a query to get the schema information if you do not have it available as a resource already.",
 	{},
 	async () => {
 		try {
@@ -100,8 +101,8 @@ server.tool(
 );
 
 server.tool(
-	"query-graphql",
-	"Query a GraphQL endpoint with the given query and variables",
+	"Query-GraphQL",
+	"Query the ZoomInfo GTM GraphQL endpoint with the given query and variables. The GraphQL endpoint implements the relay.dev `GraphQL Cursor Connections Specification` (https://relay.dev/graphql/connections.htm). The query must be a valid GraphQL query.",
 	{
 		query: z.string(),
 		variables: z.string().optional(),

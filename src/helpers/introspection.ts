@@ -1,5 +1,6 @@
 import { buildClientSchema, getIntrospectionQuery, printSchema } from "graphql";
 import { readFile } from "node:fs/promises";
+import { fetch } from "undici";
 /**
  * Introspect a GraphQL endpoint and return the schema as the GraphQL SDL
  * @param endpoint - The endpoint to introspect
@@ -24,7 +25,7 @@ export async function introspectEndpoint(
 		throw new Error(`GraphQL request failed: ${response.statusText}`);
 	}
 
-	const responseJson = await response.json();
+	const responseJson = await response.json() as { data: import('graphql').IntrospectionQuery };
 	// Transform to a schema object
 	const schema = buildClientSchema(responseJson.data);
 
